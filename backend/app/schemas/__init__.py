@@ -9,6 +9,13 @@ from app.schemas.user import (
     UserLogin,
     UserOut,
 )
+from app.schemas.incident import (
+    DepartmentMetric,
+    IncidentCreate,
+    IncidentMetricsResponse,
+    IncidentResolve,
+    IncidentResponse,
+)
 
 __all__ = [
     "UserCreate",
@@ -20,4 +27,9 @@ __all__ = [
     "ResetPasswordRequest",
     "UpdatePasswordRequest",
     "MessageResponse",
+    "IncidentCreate",
+    "IncidentResolve",
+    "IncidentResponse",
+    "DepartmentMetric",
+    "IncidentMetricsResponse",
 ]

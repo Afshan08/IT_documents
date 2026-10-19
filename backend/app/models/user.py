@@ -10,6 +10,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
+    is_admin = Column(Boolean, default=True, nullable=False)  # Admins can view full incident backlog & metrics
     reset_token = Column(String, nullable=True, index=True)
     reset_token_expires_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

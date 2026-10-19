@@ -1,30 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import ReportIncidentPage from './pages/ReportIncidentPage';
+import TrackIncidentPage from './pages/TrackIncidentPage';
+import DashboardPage from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
-import DashboardPage from './pages/DashboardPage';
 
 function MainApp() {
   const { user, loading } = useAuth();
-  const [currentView, setCurrentView] = useState('login');
+  const [currentView, setCurrentView] = useState('report-incident');
+  const [ticketToTrack, setTicketToTrack] = useState('');
 
+  // If dad logs in, navigate directly to dashboard
   useEffect(() => {
-    if (!loading) {
-      if (user) {
-        setCurrentView('dashboard');
-      } else if (currentView === 'dashboard') {
-        setCurrentView('login');
-      }
+    if (!loading && user && (currentView === 'login' || currentView === 'signup')) {
+      setCurrentView('dashboard');
     }
   }, [user, loading]);
+
+  const handleTrackTicket = (ticketNumber) => {
+    setTicketToTrack(ticketNumber);
+    setCurrentView('track-incident');
+  };
 
   if (loading) {
     return (
       <div className="loading-screen">
         <div className="spinner"></div>
-        <p>Loading application...</p>
+        <p>Loading IT Center...</p>
       </div>
     );
   }
@@ -33,12 +38,23 @@ function MainApp() {
     <div className="app-layout">
       <Navbar currentView={currentView} setCurrentView={setCurrentView} />
       <main className="content-container">
+        {currentView === 'report-incident' && (
+          <ReportIncidentPage onTrackTicket={handleTrackTicket} />
+        )}
+        {currentView === 'track-incident' && (
+          <TrackIncidentPage
+            initialTicket={ticketToTrack}
+            onReportNew={() => setCurrentView('report-incident')}
+          />
+        )}
+        {currentView === 'dashboard' && (
+          user ? <DashboardPage /> : <LoginPage setCurrentView={setCurrentView} />
+        )}
         {currentView === 'login' && <LoginPage setCurrentView={setCurrentView} />}
         {currentView === 'signup' && <SignupPage setCurrentView={setCurrentView} />}
         {currentView === 'forgot-password' && (
           <ForgotPasswordPage setCurrentView={setCurrentView} />
         )}
-        {currentView === 'dashboard' && <DashboardPage />}
       </main>
     </div>
   );

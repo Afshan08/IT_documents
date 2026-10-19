@@ -9,28 +9,43 @@ export default function Navbar({ currentView, setCurrentView }) {
       <div className="navbar-container">
         <div
           className="brand"
-          onClick={() => setCurrentView(user ? 'dashboard' : 'login')}
+          onClick={() => setCurrentView('report-incident')}
           style={{ cursor: 'pointer' }}
         >
-          <span className="brand-logo">⚡</span>
-          <span className="brand-name">FullStack Auth</span>
+          <span className="brand-logo">🛡️</span>
+          <span className="brand-name">IT Support & Value Center</span>
         </div>
 
         <nav className="nav-links">
+          {/* Public links accessible to all employees */}
+          <button
+            className={`nav-btn ${currentView === 'report-incident' ? 'active' : ''}`}
+            onClick={() => setCurrentView('report-incident')}
+          >
+            Report an Issue
+          </button>
+          <button
+            className={`nav-btn ${currentView === 'track-incident' ? 'active' : ''}`}
+            onClick={() => setCurrentView('track-incident')}
+          >
+            Track Ticket
+          </button>
+
+          {/* Admin / Authenticated controls */}
           {user ? (
             <>
-              <span className="user-badge">{user.email}</span>
               <button
-                className={`nav-btn ${currentView === 'dashboard' ? 'active' : ''}`}
+                className={`nav-btn btn-highlight ${currentView === 'dashboard' ? 'active' : ''}`}
                 onClick={() => setCurrentView('dashboard')}
               >
-                Dashboard
+                IT Admin Dashboard
               </button>
+              <span className="user-badge">{user.email}</span>
               <button
                 className="nav-btn btn-danger"
                 onClick={() => {
                   logout();
-                  setCurrentView('login');
+                  setCurrentView('report-incident');
                 }}
               >
                 Log Out
@@ -42,19 +57,13 @@ export default function Navbar({ currentView, setCurrentView }) {
                 className={`nav-btn ${currentView === 'login' ? 'active' : ''}`}
                 onClick={() => setCurrentView('login')}
               >
-                Log In
+                Staff Login
               </button>
               <button
                 className={`nav-btn ${currentView === 'signup' ? 'active' : ''}`}
                 onClick={() => setCurrentView('signup')}
               >
                 Sign Up
-              </button>
-              <button
-                className={`nav-btn ${currentView === 'forgot-password' ? 'active' : ''}`}
-                onClick={() => setCurrentView('forgot-password')}
-              >
-                Forgot Password
               </button>
             </>
           )}

@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -16,7 +17,7 @@ def get_current_user(
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication token required",
+            detail="Authentication required",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
@@ -50,3 +51,35 @@ def get_current_user(
         )
     
     return user
+
+
+def get_optional_current_user(
+    token: Optional[str] = Depends(oauth2_scheme),
+    db: Session = Depends(get_db),
+) -> Optional[User]:
+    """Dependency that extracts user if authenticated, or returns None for guest/unregistered requests."""
+    if not token:
+        return None
+    try:
+        payload = decode_access_token(token)
+        if not payload:
+            return None
+        user_id = payload.get("sub")
+        if not user_id:
+            return None
+        user = db.query(User).filter(User.id == int(user_id), User.is_active.is_(True)).first()
+        return user
+    except Exception:
+        return None
+
+
+def get_current_admin(
+    current_user: User = Depends(get_current_user),
+) -> User:
+    """Dependency to ensure the user has administrative privileges."""
+    if not getattr(current_user, "is_admin", False):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Administrative privileges required to access this resource",
+        )
+    return current_user
