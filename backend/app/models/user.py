@@ -8,9 +8,10 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
+    username = Column(String, unique=True, index=True, nullable=True)
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
-    is_admin = Column(Boolean, default=True, nullable=False)  # Admins can view full incident backlog & metrics
+    is_admin = Column(Boolean, default=False, nullable=False)  # Only designated IT manager has admin access
     reset_token = Column(String, nullable=True, index=True)
     reset_token_expires_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

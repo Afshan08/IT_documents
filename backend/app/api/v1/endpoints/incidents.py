@@ -2,7 +2,7 @@ from datetime import datetime
 import secrets
 from typing import Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import desc, func
+from sqlalchemy import case, desc, func
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_admin, get_optional_current_user
@@ -98,7 +98,7 @@ def report_incident(
         urgency=data.urgency,
         impact_scope=data.impact_scope,
         work_stopped=data.work_stopped,
-        description=data.description.strip(),
+        description=(data.description or data.title).strip(),
         status="Open",
     )
     db.add(incident)
@@ -137,7 +137,33 @@ def list_incidents(
     if urgency_filter:
         query = query.filter(Incident.urgency == urgency_filter)
 
-    return query.order_by(desc(Incident.created_at)).all()
+    # Priority hierarchy:
+    # 1. Work halted (work_stopped = True first)
+    # 2. Number of people affected (Entire Company > Department > 2-5 People > 1 Person)
+    # 3. Urgency / priority (Critical > High > Medium > Low)
+    # 4. Tiebreaker: Created timestamp (newest first)
+    scope_priority = case(
+        (Incident.impact_scope == "Entire Company", 4),
+        (Incident.impact_scope == "Department (5-20)", 3),
+        (Incident.impact_scope == "2-5 People", 2),
+        (Incident.impact_scope == "1 Person", 1),
+        else_=0,
+    )
+
+    urgency_priority = case(
+        (Incident.urgency == "Critical", 4),
+        (Incident.urgency == "High", 3),
+        (Incident.urgency == "Medium", 2),
+        (Incident.urgency == "Low", 1),
+        else_=0,
+    )
+
+    return query.order_by(
+        desc(Incident.work_stopped),
+        desc(scope_priority),
+        desc(urgency_priority),
+        desc(Incident.created_at),
+    ).all()
 
 
 @router.patch("/{incident_id}/resolve", response_model=IncidentResponse)
@@ -173,6 +199,26 @@ def resolve_incident(
     incident.resolved_by_id = current_admin.id
     incident.resolved_at = datetime.utcnow()
 
+    db.commit()
+    db.refresh(incident)
+    return incident
+
+
+@router.patch("/{incident_id}/in-progress", response_model=IncidentResponse)
+def mark_in_progress(
+    incident_id: int,
+    current_admin: User = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    """Admin-only: Mark an incident as In Progress so the reporting employee knows it is being addressed."""
+    incident = db.query(Incident).filter(Incident.id == incident_id).first()
+    if not incident:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Incident not found",
+        )
+
+    incident.status = "In Progress"
     db.commit()
     db.refresh(incident)
     return incident

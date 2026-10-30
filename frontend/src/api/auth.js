@@ -9,11 +9,11 @@ async function handleResponse(response) {
   return data;
 }
 
-export async function loginUser(email, password) {
+export async function loginUser(identifier, password) {
   const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email: identifier, password }),
   });
   return handleResponse(response);
 }

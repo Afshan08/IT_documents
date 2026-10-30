@@ -155,15 +155,11 @@ $$\text{Value Saved} = (\text{Employees Affected} \times \text{Hourly Wage} \tim
 
 ---
 
-## 🛠️ Running Locally Without Docker
+## 🛠️ Running Locally (Zero-Docker / SQLite3)
 
-### 1. Database (PostgreSQL)
-Ensure PostgreSQL is running locally or start a container:
-```bash
-docker run --name app_db -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=app_db -p 5432:5432 -d postgres:16-alpine
-```
+No Docker or PostgreSQL server required! The application defaults to **SQLite3** for local development.
 
-### 2. Backend (FastAPI)
+### 1. Start the Backend (FastAPI)
 ```bash
 cd backend
 python -m venv .venv
@@ -176,14 +172,15 @@ python -m venv .venv
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
+*(The backend automatically creates the SQLite `app.db` file and all tables on startup).*
 
-### 3. Frontend (React + Vite)
+### 2. Start the Frontend (React + Vite)
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open **[http://localhost:3000](http://localhost:3000)** in your browser!
 
 ---
 

@@ -12,7 +12,7 @@ class IncidentCreate(BaseModel):
     urgency: str = Field(default="Medium", description="Low, Medium, High, or Critical")
     impact_scope: str = Field(default="1 Person", description="1 Person, 2-5 People, Department (5-20), Entire Company")
     work_stopped: bool = Field(default=False, description="Whether business operations are completely blocked")
-    description: str = Field(..., min_length=10, max_length=2000, description="Detailed explanation of the issue")
+    description: Optional[str] = Field(default="", max_length=2000, description="Optional explanation of the issue")
 
 
 class IncidentResolve(BaseModel):
@@ -33,7 +33,7 @@ class IncidentResponse(BaseModel):
     urgency: str
     impact_scope: str
     work_stopped: bool
-    description: str
+    description: Optional[str] = ""
     status: str
     time_spent_minutes: Optional[int] = None
     estimated_cost_saved: Optional[float] = None

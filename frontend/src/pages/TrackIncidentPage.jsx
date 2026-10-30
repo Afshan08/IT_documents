@@ -96,15 +96,35 @@ export default function TrackIncidentPage({ initialTicket = '', onReportNew }) {
             </div>
           </div>
 
-          <div className="ticket-desc-box">
-            <strong>Description:</strong>
-            <p>{ticketData.description}</p>
-          </div>
+          {ticketData.description && ticketData.description !== ticketData.title && (
+            <div className="ticket-desc-box">
+              <strong>Description:</strong>
+              <p>{ticketData.description}</p>
+            </div>
+          )}
+
+          {ticketData.status === 'In Progress' && (
+            <div className="in-progress-notice-box">
+              <div className="in-progress-header">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <strong>Under Active Investigation</strong>
+              </div>
+              <p>IT Support has acknowledged your ticket and is actively working on resolving the issue.</p>
+            </div>
+          )}
 
           {ticketData.status === 'Resolved' && (
             <div className="resolution-box">
               <div className="resolution-header">
-                <span className="badge-resolved">✓ Resolved by IT</span>
+                <span className="badge-resolved">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: '-1px', marginRight: '4px' }}>
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Resolved by IT
+                </span>
                 {ticketData.resolved_at && (
                   <span className="resolved-time">
                     {new Date(ticketData.resolved_at).toLocaleString()}

@@ -27,7 +27,8 @@ export default function SignupPage({ setCurrentView }) {
     setSubmitting(true);
     try {
       await signup(email, password);
-      setCurrentView('dashboard');
+      // New users are standard staff accounts; direct them to the reporting portal
+      setCurrentView('report-incident');
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {

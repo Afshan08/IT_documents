@@ -13,10 +13,14 @@ function MainApp() {
   const [currentView, setCurrentView] = useState('report-incident');
   const [ticketToTrack, setTicketToTrack] = useState('');
 
-  // If dad logs in, navigate directly to dashboard
+  // Route to dashboard only if authenticated as IT Manager; otherwise route to report-incident
   useEffect(() => {
     if (!loading && user && (currentView === 'login' || currentView === 'signup')) {
-      setCurrentView('dashboard');
+      if (user.is_admin) {
+        setCurrentView('dashboard');
+      } else {
+        setCurrentView('report-incident');
+      }
     }
   }, [user, loading]);
 
@@ -48,7 +52,33 @@ function MainApp() {
           />
         )}
         {currentView === 'dashboard' && (
-          user ? <DashboardPage /> : <LoginPage setCurrentView={setCurrentView} />
+          user ? (
+            user.is_admin ? (
+              <DashboardPage />
+            ) : (
+              <div className="auth-card text-center" style={{ textAlign: 'center' }}>
+                <div style={{ margin: '0 auto 1rem', display: 'flex', justifyContent: 'center' }}>
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                  </svg>
+                </div>
+                <h2 className="card-title">Restricted Access</h2>
+                <p className="card-subtitle">
+                  The IT Admin Dashboard is strictly reserved for the IT Manager (Ehsan Afridi). Standard user accounts cannot view this page.
+                </p>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={() => setCurrentView('report-incident')}
+                >
+                  Return to Incident Portal
+                </button>
+              </div>
+            )
+          ) : (
+            <LoginPage setCurrentView={setCurrentView} />
+          )
         )}
         {currentView === 'login' && <LoginPage setCurrentView={setCurrentView} />}
         {currentView === 'signup' && <SignupPage setCurrentView={setCurrentView} />}

@@ -12,7 +12,12 @@ export default function Navbar({ currentView, setCurrentView }) {
           onClick={() => setCurrentView('report-incident')}
           style={{ cursor: 'pointer' }}
         >
-          <span className="brand-logo">🛡️</span>
+          <span className="brand-logo-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </span>
           <span className="brand-name">IT Support & Value Center</span>
         </div>
 
@@ -34,13 +39,18 @@ export default function Navbar({ currentView, setCurrentView }) {
           {/* Admin / Authenticated controls */}
           {user ? (
             <>
-              <button
-                className={`nav-btn btn-highlight ${currentView === 'dashboard' ? 'active' : ''}`}
-                onClick={() => setCurrentView('dashboard')}
-              >
-                IT Admin Dashboard
-              </button>
-              <span className="user-badge">{user.email}</span>
+              {user.is_admin && (
+                <button
+                  className={`nav-btn btn-highlight ${currentView === 'dashboard' ? 'active' : ''}`}
+                  onClick={() => setCurrentView('dashboard')}
+                >
+                  IT Admin Dashboard
+                </button>
+              )}
+              <span className="user-badge">
+                {user.username || user.email}
+                {user.is_admin ? ' (Manager)' : ''}
+              </span>
               <button
                 className="nav-btn btn-danger"
                 onClick={() => {

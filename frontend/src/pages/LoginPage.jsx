@@ -4,7 +4,7 @@ import Alert from '../components/Alert';
 
 export default function LoginPage({ setCurrentView }) {
   const { login } = useAuth();
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -15,8 +15,13 @@ export default function LoginPage({ setCurrentView }) {
     setSubmitting(true);
 
     try {
-      await login(email, password);
-      setCurrentView('dashboard');
+      const res = await login(identifier, password);
+      // Strictly navigate to IT Admin Dashboard only if the user is the authorized IT Manager
+      if (res.user?.is_admin) {
+        setCurrentView('dashboard');
+      } else {
+        setCurrentView('report-incident');
+      }
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
@@ -27,20 +32,20 @@ export default function LoginPage({ setCurrentView }) {
   return (
     <div className="auth-card">
       <h2 className="card-title">Welcome Back</h2>
-      <p className="card-subtitle">Log in to access your account</p>
+      <p className="card-subtitle">Log in with your credentials to access your account</p>
 
       <Alert type="error" message={error} />
 
       <form onSubmit={handleSubmit} className="auth-form">
         <div className="form-group">
-          <label htmlFor="login-email">Email Address</label>
+          <label htmlFor="login-identifier">Username or Email</label>
           <input
-            id="login-email"
-            type="email"
+            id="login-identifier"
+            type="text"
             required
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="e.g. Ehsan Afridi or you@company.com"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
           />
         </div>
 

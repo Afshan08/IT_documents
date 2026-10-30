@@ -5,15 +5,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.api import api_router
 from app.database import Base, engine
 import app.models  # Ensures models are registered with Base metadata
+from app.core.init_db import init_db
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Create database tables automatically if they don't exist
+    # Initialize database tables and seed required admin account
     try:
-        Base.metadata.create_all(bind=engine)
+        init_db()
     except Exception as e:
-        print(f"Warning: Database connection/table creation skipped or failed on startup: {e}")
+        print(f"Warning: Database initialization or migration failed on startup: {e}")
     yield
 
 
@@ -45,3 +46,12 @@ def read_root():
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+
+if __name__ == "__main__":
+    import os
+    import sys
+    import uvicorn
+
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)

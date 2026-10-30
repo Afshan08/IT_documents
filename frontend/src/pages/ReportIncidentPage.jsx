@@ -4,15 +4,10 @@ import { createIncident } from '../api/incidents';
 import Alert from '../components/Alert';
 
 const DEPARTMENTS = [
-  'Accounting & Finance',
-  'Sales & Marketing',
-  'Operations & Logistics',
-  'Customer Support',
-  'Human Resources',
-  'Warehouse / Inventory',
-  'Executive & Management',
-  'General Office',
-  'Other',
+  'Finance',
+  'Marketing',
+  'Sales',
+  'Others',
 ];
 
 const CATEGORIES = [
@@ -91,11 +86,6 @@ export default function ReportIncidentPage({ onTrackTicket }) {
       return;
     }
 
-    if (formData.description.trim().length < 10) {
-      setError('Please provide a detailed description of the problem (at least 10 characters).');
-      return;
-    }
-
     setSubmitting(true);
     try {
       const result = await createIncident(formData, token);
@@ -133,7 +123,11 @@ export default function ReportIncidentPage({ onTrackTicket }) {
   if (submittedTicket) {
     return (
       <div className="auth-card success-card">
-        <div className="success-badge-icon">✓</div>
+        <div className="success-badge-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
         <h2 className="card-title">Incident Successfully Logged</h2>
         <p className="card-subtitle">
           Your request has been officially queued in the IT system.
@@ -300,20 +294,6 @@ export default function ReportIncidentPage({ onTrackTicket }) {
               required
               placeholder="e.g., Main accounting printer offline / Cannot connect to file server"
               value={formData.title}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="description">Detailed Description *</label>
-            <textarea
-              id="description"
-              name="description"
-              rows={4}
-              required
-              className="form-textarea"
-              placeholder="Describe what happened, any error messages displayed, and what you were doing when the issue started..."
-              value={formData.description}
               onChange={handleChange}
             />
           </div>

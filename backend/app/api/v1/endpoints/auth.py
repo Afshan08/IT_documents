@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import logging
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
@@ -31,7 +32,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/signup", response_model=Token, status_code=status.HTTP_201_CREATED)
 def signup(user_in: UserCreate, db: Session = Depends(get_db)):
-    """Register a new user account with secure password hashing."""
+    """Register a new user account with secure password hashing (standard non-admin privileges)."""
     existing_user = db.query(User).filter(User.email == user_in.email.lower()).first()
     if existing_user:
         raise HTTPException(
@@ -39,10 +40,20 @@ def signup(user_in: UserCreate, db: Session = Depends(get_db)):
             detail="An account with this email already exists",
         )
 
+    if user_in.username:
+        existing_username = db.query(User).filter(func.lower(User.username) == user_in.username.strip().lower()).first()
+        if existing_username:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="An account with this username already exists",
+            )
+
     user = User(
         email=user_in.email.lower(),
+        username=user_in.username.strip() if user_in.username else None,
         hashed_password=hash_password(user_in.password),
         is_active=True,
+        is_admin=False,  # Regular users never gain administrative privileges
     )
     db.add(user)
     db.commit()
@@ -54,12 +65,25 @@ def signup(user_in: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=Token)
 def login(credentials: UserLogin, db: Session = Depends(get_db)):
-    """Authenticate a user and return a JWT access token."""
-    user = db.query(User).filter(User.email == credentials.email.lower()).first()
+    """Authenticate a user via username or email and return a JWT access token."""
+    identifier = credentials.identifier.lower()
+    if not identifier:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email or username is required",
+        )
+
+    user = db.query(User).filter(
+        or_(
+            func.lower(User.email) == identifier,
+            func.lower(User.username) == identifier,
+        )
+    ).first()
+
     if not user or not verify_password(credentials.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
+            detail="Incorrect username/email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
 

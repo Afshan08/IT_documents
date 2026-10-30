@@ -53,6 +53,16 @@ export async function resolveIncident(incidentId, resolutionData, token) {
   return handleResponse(response);
 }
 
+export async function markIncidentInProgress(incidentId, token) {
+  const response = await fetch(`${API_BASE_URL}/api/v1/incidents/${incidentId}/in-progress`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return handleResponse(response);
+}
+
 export async function getIncidentMetrics(token) {
   const response = await fetch(`${API_BASE_URL}/api/v1/incidents/stats/metrics`, {
     headers: { Authorization: `Bearer ${token}` },
