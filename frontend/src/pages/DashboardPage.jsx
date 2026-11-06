@@ -68,7 +68,7 @@ export default function DashboardPage() {
   const [metrics, setMetrics] = useState(null);
   const [incidents, setIncidents] = useState([]);
   const [activeTab, setActiveTab] = useState('queue'); // 'queue', 'metrics', 'formula', 'profile'
-  const [statusFilter, setStatusFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('Open');
   const [loading, setLoading] = useState(true);
   const [actionError, setActionError] = useState('');
   const [actionSuccess, setActionSuccess] = useState('');
@@ -272,6 +272,12 @@ export default function DashboardPage() {
           >
             Account Settings
           </button>
+          <button
+            className={`dash-tab ${activeTab === 'history' ? 'active' : ''}`}
+            onClick={() => setActiveTab('history')}
+          >
+            History (Resolved)
+          </button>
         </div>
       </div>
 
@@ -320,8 +326,9 @@ export default function DashboardPage() {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="filter-select"
               >
-                <option value="">All Incidents</option>
                 <option value="Open">Open Only</option>
+                <option value="">All Incidents</option>
+                
                 <option value="In Progress">In Progress Only</option>
                 <option value="Resolved">Resolved Only</option>
               </select>

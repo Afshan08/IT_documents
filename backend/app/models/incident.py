@@ -25,6 +25,9 @@ class Incident(Base):
     impact_scope = Column(String, default="1 Person", nullable=False)  # 1 Person, 2-5 People, Department (5-20), Entire Company
     work_stopped = Column(Boolean, default=False, nullable=False)
     description = Column(Text, nullable=False)
+    # Auto‑captured system info (not exposed to front‑end)
+    reporter_username = Column(String, nullable=True)
+    reporter_ip = Column(String, nullable=True)
 
     # Workflow status
     status = Column(String, default="Open", nullable=False, index=True)  # Open, In Progress, Resolved, Closed

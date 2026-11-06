@@ -1,7 +1,7 @@
 from datetime import datetime
 import secrets
 from typing import Dict, List, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, BackgroundTasks, status
 from sqlalchemy import case, desc, func
 from sqlalchemy.orm import Session
 
@@ -75,6 +75,7 @@ def calculate_estimated_savings(
 @router.post("", response_model=IncidentResponse, status_code=status.HTTP_201_CREATED)
 def report_incident(
     data: IncidentCreate,
+    request: Request,
     current_user: Optional[User] = Depends(get_optional_current_user),
     db: Session = Depends(get_db),
 ):
@@ -100,6 +101,9 @@ def report_incident(
         work_stopped=data.work_stopped,
         description=(data.description or data.title).strip(),
         status="Open",
+        # Capture client IP and duplicate username for audit
+        reporter_ip=request.client.host if request.client else None,
+        reporter_username=data.reporter_name.strip(),
     )
     db.add(incident)
     db.commit()
@@ -170,6 +174,7 @@ def list_incidents(
 def resolve_incident(
     incident_id: int,
     resolution_data: IncidentResolve,
+    background_tasks: BackgroundTasks,
     current_admin: User = Depends(get_current_admin),
     db: Session = Depends(get_db),
 ):

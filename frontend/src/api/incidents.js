@@ -1,4 +1,6 @@
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+// API calls use relative paths — nginx proxies /api/ to the backend container.
+// This means the app works on localhost AND any LAN device without rebuilding.
+const API_BASE_URL = '';
 
 async function handleResponse(response) {
   const data = await response.json().catch(() => ({}));

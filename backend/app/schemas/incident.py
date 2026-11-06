@@ -27,6 +27,8 @@ class IncidentResponse(BaseModel):
     user_id: Optional[int] = None
     reporter_name: str
     reporter_email: str
+    reporter_username: Optional[str] = None
+    reporter_ip: Optional[str] = None
     department: str
     title: str
     category: str

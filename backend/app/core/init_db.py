@@ -21,6 +21,13 @@ def init_db():
             db.execute(text("ALTER TABLE users ADD COLUMN username VARCHAR"))
             db.commit()
 
+        # Check if 'reporter_username' column exists on 'incidents' table
+        incident_columns = [col["name"] for col in inspector.get_columns("incidents")]
+        if "reporter_username" not in incident_columns:
+            logger.info("Adding 'reporter_username' column to 'incidents' table...")
+            db.execute(text("ALTER TABLE incidents ADD COLUMN reporter_username VARCHAR"))
+            db.commit()
+
         # Find or create IT Manager 'Ehsan Afridi'
         manager = (
             db.query(User)

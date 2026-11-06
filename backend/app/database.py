@@ -2,15 +2,15 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "sqlite:///./app.db"
-)
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# connect_args={"check_same_thread": False} is required for SQLite with multi-threaded FastAPI
-connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
+if not DATABASE_URL:
+    raise RuntimeError(
+        "DATABASE_URL environment variable is not set. "
+        "Copy backend/.env.example to backend/.env and fill in your PostgreSQL connection string."
+    )
 
-engine = create_engine(DATABASE_URL, connect_args=connect_args)
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
