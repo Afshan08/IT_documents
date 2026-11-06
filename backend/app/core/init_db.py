@@ -28,38 +28,54 @@ def init_db():
             db.execute(text("ALTER TABLE incidents ADD COLUMN reporter_username VARCHAR"))
             db.commit()
 
-        # Find or create IT Manager 'Ehsan Afridi'
-        manager = (
-            db.query(User)
-            .filter(
-                (User.username == "Ehsan Afridi")
-                | (User.email == "ehsan.afridi@company.com")
-            )
-            .first()
-        )
+        # Seed / Update default IT Managers (Admin users)
+        admin_users = [
+            {
+                "username": "Ehsan Afridi",
+                "email": "ehsan.afridi@company.com",
+                "password": "ek@afridi",
+            },
+            {
+                "username": "Farhan",
+                "email": "farhan@company.com",
+                "password": "farhan@pgc",
+            },
+        ]
 
-        if manager:
-            manager.username = "Ehsan Afridi"
-            manager.email = manager.email or "ehsan.afridi@company.com"
-            manager.hashed_password = hash_password("ek@afridi")
-            manager.is_admin = True
-            manager.is_active = True
-            logger.info("Updated IT Manager (Ehsan Afridi) credentials and admin role.")
-        else:
-            manager = User(
-                username="Ehsan Afridi",
-                email="ehsan.afridi@company.com",
-                hashed_password=hash_password("ek@afridi"),
-                is_admin=True,
-                is_active=True,
+        admin_usernames = [u["username"] for u in admin_users]
+
+        for admin_info in admin_users:
+            admin = (
+                db.query(User)
+                .filter(
+                    (User.username == admin_info["username"])
+                    | (User.email == admin_info["email"])
+                )
+                .first()
             )
-            db.add(manager)
-            logger.info("Created IT Manager (Ehsan Afridi) user.")
+
+            if admin:
+                admin.username = admin_info["username"]
+                admin.email = admin.email or admin_info["email"]
+                admin.hashed_password = hash_password(admin_info["password"])
+                admin.is_admin = True
+                admin.is_active = True
+                logger.info(f"Updated IT Manager ({admin_info['username']}) credentials and admin role.")
+            else:
+                admin = User(
+                    username=admin_info["username"],
+                    email=admin_info["email"],
+                    hashed_password=hash_password(admin_info["password"]),
+                    is_admin=True,
+                    is_active=True,
+                )
+                db.add(admin)
+                logger.info(f"Created IT Manager ({admin_info['username']}) user.")
 
         db.commit()
 
-        # Ensure any non-Ehsan Afridi users do not have admin access
-        db.query(User).filter(User.username != "Ehsan Afridi").update(
+        # Ensure any users not in admin list do not have admin access
+        db.query(User).filter(~User.username.in_(admin_usernames)).update(
             {"is_admin": False}, synchronize_session=False
         )
         db.commit()

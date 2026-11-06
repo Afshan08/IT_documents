@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { forgotPassword, resetPassword } from '../api/auth';
 import Alert from '../components/Alert';
 
-export default function ForgotPasswordPage({ setCurrentView }) {
+export default function ForgotPasswordPage() {
   const [step, setStep] = useState(1); // 1 = Request Token, 2 = Set New Password
   const [email, setEmail] = useState('');
   const [token, setToken] = useState('');
@@ -180,13 +181,9 @@ export default function ForgotPasswordPage({ setCurrentView }) {
 
       <div className="card-footer">
         <span>Remember your password? </span>
-        <button
-          type="button"
-          className="text-link-accent"
-          onClick={() => setCurrentView('login')}
-        >
+        <Link to="/login" className="text-link-accent">
           Back to Login
-        </button>
+        </Link>
       </div>
     </div>
   );

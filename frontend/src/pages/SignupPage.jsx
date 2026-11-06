@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Alert from '../components/Alert';
 
-export default function SignupPage({ setCurrentView }) {
+export default function SignupPage() {
   const { signup } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -28,7 +30,7 @@ export default function SignupPage({ setCurrentView }) {
     try {
       await signup(email, password);
       // New users are standard staff accounts; direct them to the reporting portal
-      setCurrentView('report-incident');
+      navigate('/report');
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
@@ -87,13 +89,9 @@ export default function SignupPage({ setCurrentView }) {
 
       <div className="card-footer">
         <span>Already have an account? </span>
-        <button
-          type="button"
-          className="text-link-accent"
-          onClick={() => setCurrentView('login')}
-        >
+        <Link to="/login" className="text-link-accent">
           Sign In
-        </button>
+        </Link>
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Alert from '../components/Alert';
 
-export default function LoginPage({ setCurrentView }) {
+export default function LoginPage() {
   const { login } = useAuth();
+  const navigate = useNavigate();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,9 +20,9 @@ export default function LoginPage({ setCurrentView }) {
       const res = await login(identifier, password);
       // Strictly navigate to IT Admin Dashboard only if the user is the authorized IT Manager
       if (res.user?.is_admin) {
-        setCurrentView('dashboard');
+        navigate('/dashboard/queue');
       } else {
-        setCurrentView('report-incident');
+        navigate('/report');
       }
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
@@ -62,13 +64,9 @@ export default function LoginPage({ setCurrentView }) {
         </div>
 
         <div className="form-actions-row">
-          <button
-            type="button"
-            className="text-link"
-            onClick={() => setCurrentView('forgot-password')}
-          >
+          <Link to="/forgot-password" className="text-link">
             Forgot Password?
-          </button>
+          </Link>
         </div>
 
         <button type="submit" className="btn-primary" disabled={submitting}>
@@ -78,13 +76,9 @@ export default function LoginPage({ setCurrentView }) {
 
       <div className="card-footer">
         <span>Don't have an account? </span>
-        <button
-          type="button"
-          className="text-link-accent"
-          onClick={() => setCurrentView('signup')}
-        >
+        <Link to="/signup" className="text-link-accent">
           Create one now
-        </button>
+        </Link>
       </div>
     </div>
   );
