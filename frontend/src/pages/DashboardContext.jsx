@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState } from 'react';
 import { getIncidents, getIncidentMetrics, resolveIncident, markIncidentInProgress } from '../api/incidents';
 import { updatePassword } from '../api/auth';
 
@@ -8,7 +8,7 @@ export const DashboardProvider = ({ children }) => {
   // Metrics & Incidents state
   const [metrics, setMetrics] = useState(null);
   const [incidents, setIncidents] = useState([]);
-  const [statusFilter, setStatusFilter] = useState('Open'); // default open only
+  const [statusFilter, setStatusFilter] = useState('Open');
   const [loading, setLoading] = useState(true);
   const [actionError, setActionError] = useState('');
   const [actionSuccess, setActionSuccess] = useState('');
@@ -33,26 +33,7 @@ export const DashboardProvider = ({ children }) => {
   const [pwSuccess, setPwSuccess] = useState('');
   const [updatingPw, setUpdatingPw] = useState(false);
 
-  // Fetch data
-  const fetchData = async (token) => {
-    if (!token) return;
-    setLoading(true);
-    setActionError('');
-    try {
-      const [metricsData, incidentsData] = await Promise.all([
-        getIncidentMetrics(token),
-        getIncidents(token, { status: statusFilter }),
-      ]);
-      setMetrics(metricsData);
-      setIncidents(sortTicketsByPriority(incidentsData));
-    } catch (err) {
-      setActionError(err.message || 'Failed to fetch dashboard data.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Helpers (same as original file)
+  // Priority helpers
   const SCOPE_PRIORITY = {
     'Entire Company': 4,
     'Department (5-20)': 3,
@@ -83,6 +64,25 @@ export const DashboardProvider = ({ children }) => {
     });
   }
 
+  // Fetch data
+  const fetchData = async (token) => {
+    if (!token) return;
+    setLoading(true);
+    setActionError('');
+    try {
+      const [metricsData, incidentsData] = await Promise.all([
+        getIncidentMetrics(token),
+        getIncidents(token, { status: statusFilter }),
+      ]);
+      setMetrics(metricsData);
+      setIncidents(sortTicketsByPriority(incidentsData));
+    } catch (err) {
+      setActionError(err.message || 'Failed to fetch dashboard data.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Resolve helpers
   const startResolve = (incident) => {
     setResolvingTicket(incident);
@@ -105,7 +105,7 @@ export const DashboardProvider = ({ children }) => {
     try {
       await markIncidentInProgress(incidentId, token);
       setActionSuccess('Incident status updated to "In Progress".');
-      // token will be passed from component that calls this
+      await fetchData(token);
     } catch (err) {
       setActionError(err.message || 'Failed to update ticket status to In Progress.');
     }
@@ -131,8 +131,11 @@ export const DashboardProvider = ({ children }) => {
         { resolution_notes: finalNotes, time_spent_minutes: Number(timeSpent) },
         token
       );
-      setActionSuccess(`Ticket ${updated.ticket_number} resolved!`);
+      setActionSuccess(
+        `Ticket ${updated.ticket_number} resolved! Algorithmic savings calculated: $${updated.estimated_cost_saved.toLocaleString()}`
+      );
       setResolvingTicket(null);
+      await fetchData(token);
     } catch (err) {
       setActionError(err.message || 'Failed to resolve incident.');
     } finally {
