@@ -43,6 +43,13 @@ export async function getIncidents(token, filters = {}) {
   return handleResponse(response);
 }
 
+export async function getIncident(incidentId, token) {
+  const response = await fetch(`${API_BASE_URL}/api/v1/incidents/${incidentId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return handleResponse(response);
+}
+
 export async function resolveIncident(incidentId, resolutionData, token) {
   const response = await fetch(`${API_BASE_URL}/api/v1/incidents/${incidentId}/resolve`, {
     method: 'PATCH',

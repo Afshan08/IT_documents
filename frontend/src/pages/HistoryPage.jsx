@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { DashboardContext } from './DashboardContext';
 import { useAuth } from '../context/AuthContext';
 import Alert from '../components/Alert';
@@ -12,6 +13,7 @@ export default function HistoryPage() {
     sortTicketsByPriority,
   } = useContext(DashboardContext);
   const { token } = useAuth();
+  const navigate = useNavigate();
 
   // Fetch all incidents and filter to resolved ones
   useEffect(() => {
@@ -55,9 +57,21 @@ export default function HistoryPage() {
               </thead>
               <tbody>
                 {resolvedIncidents.map((inc) => (
-                  <tr key={inc.id}>
+                  <tr
+                    key={inc.id}
+                    className="clickable-row"
+                    onClick={() => navigate(`/dashboard/queue/${inc.id}`)}
+                    title="Click to view full record details"
+                  >
                     <td>
-                      <strong>{inc.ticket_number}</strong>
+                      <Link
+                        to={`/dashboard/queue/${inc.id}`}
+                        className="ticket-link"
+                        onClick={(e) => e.stopPropagation()}
+                        title="View Record Details"
+                      >
+                        {inc.ticket_number}
+                      </Link>
                       <div className="table-timestamp">
                         {new Date(inc.created_at).toLocaleDateString()}
                       </div>

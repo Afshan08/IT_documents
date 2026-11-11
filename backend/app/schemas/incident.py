@@ -41,6 +41,7 @@ class IncidentResponse(BaseModel):
     estimated_cost_saved: Optional[float] = None
     resolution_notes: Optional[str] = None
     resolved_by_id: Optional[int] = None
+    resolver_name: Optional[str] = None
     created_at: datetime
     resolved_at: Optional[datetime] = None
 

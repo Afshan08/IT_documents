@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { DashboardContext } from './DashboardContext';
 import { useAuth } from '../context/AuthContext';
 import Alert from '../components/Alert';
@@ -39,6 +40,7 @@ export default function QueuePage() {
   } = useContext(DashboardContext);
 
   const { token } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token) fetchData(token);
@@ -86,9 +88,21 @@ export default function QueuePage() {
               </thead>
               <tbody>
                 {sortTicketsByPriority(incidents).map((inc) => (
-                  <tr key={inc.id} className={inc.work_stopped ? 'row-work-stopped' : ''}>
+                  <tr
+                    key={inc.id}
+                    className={`clickable-row ${inc.work_stopped ? 'row-work-stopped' : ''}`}
+                    onClick={() => navigate(`/dashboard/queue/${inc.id}`)}
+                    title="Click to view full record details"
+                  >
                     <td>
-                      <strong>{inc.ticket_number}</strong>
+                      <Link
+                        to={`/dashboard/queue/${inc.id}`}
+                        className="ticket-link"
+                        onClick={(e) => e.stopPropagation()}
+                        title="View Record Details"
+                      >
+                        {inc.ticket_number}
+                      </Link>
                       <div className="table-timestamp">{new Date(inc.created_at).toLocaleDateString()}</div>
                     </td>
                     <td>
@@ -115,12 +129,26 @@ export default function QueuePage() {
                     <td>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                         {inc.status === 'Open' && (
-                          <button type="button" className="btn-in-progress" onClick={() => handleMarkInProgress(inc.id, token)}>
+                          <button
+                            type="button"
+                            className="btn-in-progress"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleMarkInProgress(inc.id, token);
+                            }}
+                          >
                             Start Working
                           </button>
                         )}
                         {inc.status !== 'Resolved' ? (
-                          <button type="button" className="btn-resolve" onClick={() => startResolve(inc)}>
+                          <button
+                            type="button"
+                            className="btn-resolve"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              startResolve(inc);
+                            }}
+                          >
                             Resolve Issue
                           </button>
                         ) : (
@@ -128,6 +156,16 @@ export default function QueuePage() {
                             <span className="saved-val">+${inc.estimated_cost_saved?.toLocaleString()} saved</span>
                           </div>
                         )}
+                        <button
+                          type="button"
+                          className="btn-view-details"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/dashboard/queue/${inc.id}`);
+                          }}
+                        >
+                          View Details &rarr;
+                        </button>
                       </div>
                     </td>
                   </tr>

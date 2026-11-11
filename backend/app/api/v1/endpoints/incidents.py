@@ -170,6 +170,22 @@ def list_incidents(
     ).all()
 
 
+@router.get("/{incident_id}", response_model=IncidentResponse)
+def get_incident(
+    incident_id: int,
+    current_admin: User = Depends(get_current_admin),
+    db: Session = Depends(get_db),
+):
+    """Admin-only: Retrieve full details of a specific incident by ID."""
+    incident = db.query(Incident).filter(Incident.id == incident_id).first()
+    if not incident:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Incident with ID {incident_id} not found",
+        )
+    return incident
+
+
 @router.patch("/{incident_id}/resolve", response_model=IncidentResponse)
 def resolve_incident(
     incident_id: int,

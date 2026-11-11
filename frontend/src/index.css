@@ -1341,3 +1341,486 @@ h1, h2, h3, h4, h5, h6,
   box-shadow: 0 0 0 1px #bfdbfe;
 }
 
+
+
+/* ==========================================================================
+   Clickable Queue Records & Details Page
+   ========================================================================== */
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.clickable-row:hover {
+  background-color: #f8fafc;
+}
+
+.ticket-link {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.ticket-link:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.btn-view-details {
+  background-color: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.btn-view-details:hover {
+  background-color: #dbeafe;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+/* Incident Detail Page Layout */
+.incident-detail-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detail-top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.detail-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.detail-back-btn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+.detail-breadcrumbs {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.detail-breadcrumbs a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.detail-breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+.detail-breadcrumbs span {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* Header Card */
+.detail-header-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.detail-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 280px;
+}
+
+.detail-ticket-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.detail-ticket-number {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.detail-copy-btn {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.75rem;
+}
+
+.detail-db-id {
+  font-size: 0.75rem;
+  color: #64748b;
+  background-color: #f1f5f9;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.detail-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.detail-meta-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+.scope-badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+}
+
+.detail-halt-pill {
+  font-weight: 600;
+}
+
+.detail-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.detail-action-btn {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.detail-value-chip {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.value-chip-label {
+  font-size: 0.75rem;
+  color: #15803d;
+  font-weight: 500;
+}
+
+.value-chip-amount {
+  font-size: 1.2rem;
+  color: #16a34a;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Detail Content Grid */
+.detail-content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .detail-content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail-col-main,
+.detail-col-side {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detail-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.detail-card-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fafbfc;
+}
+
+.detail-card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.detail-card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Description & Specs */
+.detail-desc-box {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+}
+
+.detail-desc-text {
+  font-size: 0.95rem;
+  color: #1e293b;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.detail-desc-placeholder {
+  color: #94a3b8;
+  font-style: italic;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.detail-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.spec-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.spec-value {
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+/* Resolution Banner in Details */
+.resolution-highlight-banner {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.res-highlight-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.res-hl-label {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.res-hl-value {
+  font-size: 1.15rem;
+  font-family: 'Poppins', sans-serif;
+  color: #0f172a;
+}
+
+.res-hl-value.saved-green {
+  color: #16a34a;
+}
+
+.res-hl-date {
+  font-size: 0.85rem;
+  color: #334155;
+  font-weight: 500;
+}
+
+.detail-notes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail-notes-box {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.notes-pre {
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: #1e293b;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.resolver-signature {
+  font-size: 0.85rem;
+  color: #475569;
+  padding-top: 0.5rem;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.resolution-pending-state {
+  text-align: center;
+  padding: 1.5rem;
+  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pending-icon {
+  font-size: 2rem;
+  color: #94a3b8;
+}
+
+.resolution-pending-state h4 {
+  font-size: 1rem;
+  color: #0f172a;
+  margin: 0;
+}
+
+.resolution-pending-state p {
+  font-size: 0.875rem;
+  max-width: 440px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Reporter Card & Audit */
+.reporter-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.reporter-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #eff6ff;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #bfdbfe;
+}
+
+.reporter-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 0.25rem 0;
+}
+
+.reporter-dept-pill {
+  font-size: 0.75rem;
+  color: #475569;
+  background-color: #f1f5f9;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.audit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.audit-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.audit-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.audit-value {
+  font-size: 0.875rem;
+  color: #0f172a;
+  word-break: break-all;
+}
+
+.audit-code {
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.825rem;
+  background-color: #f1f5f9;
+  color: #0f172a;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  width: fit-content;
+}

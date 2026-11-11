@@ -44,3 +44,9 @@ class Incident(Base):
     # Relationships
     reporter_user = relationship("User", foreign_keys=[user_id])
     resolver_user = relationship("User", foreign_keys=[resolved_by_id])
+
+    @property
+    def resolver_name(self):
+        if self.resolver_user:
+            return self.resolver_user.username or self.resolver_user.email
+        return None

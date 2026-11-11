@@ -6,6 +6,7 @@ import MetricsPage from './MetricsPage';
 import FormulaPage from './FormulaPage';
 import ProfilePage from './ProfilePage';
 import HistoryPage from './HistoryPage';
+import IncidentDetailPage from './IncidentDetailPage';
 
 export default function Dashboard() {
   return (
@@ -23,6 +24,8 @@ export default function Dashboard() {
         <Routes>
           <Route index element={<Navigate to="queue" replace />} />
           <Route path="queue" element={<QueuePage />} />
+          <Route path="queue/:id" element={<IncidentDetailPage />} />
+          <Route path="incidents/:id" element={<IncidentDetailPage />} />
           <Route path="metrics" element={<MetricsPage />} />
           <Route path="formula" element={<FormulaPage />} />
           <Route path="profile" element={<ProfilePage />} />
