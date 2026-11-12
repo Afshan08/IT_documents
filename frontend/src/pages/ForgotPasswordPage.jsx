@@ -67,123 +67,125 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="auth-card">
-      <div className="tab-header">
-        <button
-          className={`tab-btn ${step === 1 ? 'active' : ''}`}
-          onClick={() => {
-            setStep(1);
-            setError('');
-            setSuccess('');
-          }}
-        >
-          1. Request Reset
-        </button>
-        <button
-          className={`tab-btn ${step === 2 ? 'active' : ''}`}
-          onClick={() => {
-            setStep(2);
-            setError('');
-            setSuccess('');
-          }}
-        >
-          2. Enter New Password
-        </button>
-      </div>
-
-      <h2 className="card-title">
-        {step === 1 ? 'Reset Your Password' : 'Set New Password'}
-      </h2>
-      <p className="card-subtitle">
-        {step === 1
-          ? 'Enter your registered email address to receive a reset token'
-          : 'Provide your reset token and enter your new password'}
-      </p>
-
-      <Alert type="error" message={error} />
-      <Alert type="success" message={success} />
-
-      {step === 1 ? (
-        <form onSubmit={handleRequestToken} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="reset-email">Email Address</label>
-            <input
-              id="reset-email"
-              type="email"
-              required
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Generating token...' : 'Request Reset Token'}
+    <div className="auth-page-container">
+      <div className="auth-card">
+        <div className="tab-header">
+          <button
+            className={`tab-btn ${step === 1 ? 'active' : ''}`}
+            onClick={() => {
+              setStep(1);
+              setError('');
+              setSuccess('');
+            }}
+          >
+            1. Request Reset
           </button>
-        </form>
-      ) : (
-        <form onSubmit={handleResetPassword} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="confirm-email">Email Address</label>
-            <input
-              id="confirm-email"
-              type="email"
-              required
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="reset-token">
-              Reset Token <span className="label-hint">(15-min validity)</span>
-            </label>
-            <input
-              id="reset-token"
-              type="text"
-              required
-              placeholder="Paste your reset token here"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="new-password">New Password (min 6 characters)</label>
-            <input
-              id="new-password"
-              type="password"
-              required
-              placeholder="••••••••"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="confirm-new-password">Confirm New Password</label>
-            <input
-              id="confirm-new-password"
-              type="password"
-              required
-              placeholder="••••••••"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          </div>
-
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Updating password...' : 'Update Password'}
+          <button
+            className={`tab-btn ${step === 2 ? 'active' : ''}`}
+            onClick={() => {
+              setStep(2);
+              setError('');
+              setSuccess('');
+            }}
+          >
+            2. Enter New Password
           </button>
-        </form>
-      )}
+        </div>
 
-      <div className="card-footer">
-        <span>Remember your password? </span>
-        <Link to="/login" className="text-link-accent">
-          Back to Login
-        </Link>
+        <h2 className="card-title">
+          {step === 1 ? 'Reset Your Password' : 'Set New Password'}
+        </h2>
+        <p className="card-subtitle">
+          {step === 1
+            ? 'Enter your registered email address to receive a reset token'
+            : 'Provide your reset token and enter your new password'}
+        </p>
+
+        <Alert type="error" message={error} />
+        <Alert type="success" message={success} />
+
+        {step === 1 ? (
+          <form onSubmit={handleRequestToken} className="auth-form">
+            <div className="form-group">
+              <label htmlFor="reset-email">Email Address</label>
+              <input
+                id="reset-email"
+                type="email"
+                required
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <button type="submit" className="btn-primary" disabled={loading}>
+              {loading ? 'Generating token...' : 'Request Reset Token'}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleResetPassword} className="auth-form">
+            <div className="form-group">
+              <label htmlFor="confirm-email">Email Address</label>
+              <input
+                id="confirm-email"
+                type="email"
+                required
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="reset-token">
+                Reset Token <span className="label-hint">(15-min validity)</span>
+              </label>
+              <input
+                id="reset-token"
+                type="text"
+                required
+                placeholder="Paste your reset token here"
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="new-password">New Password (min 6 characters)</label>
+              <input
+                id="new-password"
+                type="password"
+                required
+                placeholder="••••••••"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="confirm-new-password">Confirm New Password</label>
+              <input
+                id="confirm-new-password"
+                type="password"
+                required
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </div>
+
+            <button type="submit" className="btn-primary" disabled={loading}>
+              {loading ? 'Updating password...' : 'Update Password'}
+            </button>
+          </form>
+        )}
+
+        <div className="card-footer">
+          <span>Remember your password? </span>
+          <Link to="/login" className="text-link-accent">
+            Back to Login
+          </Link>
+        </div>
       </div>
     </div>
   );

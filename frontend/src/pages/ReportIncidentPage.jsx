@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { createIncident } from '../api/incidents';
 import Alert from '../components/Alert';
@@ -35,6 +36,7 @@ const IMPACT_SCOPES = [
 ];
 
 export default function ReportIncidentPage({ onTrackTicket }) {
+  const navigate = useNavigate();
   const { user, token } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -122,76 +124,85 @@ export default function ReportIncidentPage({ onTrackTicket }) {
 
   if (submittedTicket) {
     return (
-      <div className="auth-card success-card">
-        <div className="success-badge-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        </div>
-        <h2 className="card-title">Incident Successfully Logged</h2>
-        <p className="card-subtitle">
-          Your request has been officially queued in the IT system.
-        </p>
+      <div className="auth-page-container">
+        <div className="auth-card success-card">
+          <div className="success-badge-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h2 className="card-title">Incident Successfully Logged</h2>
+          <p className="card-subtitle">
+            Your request has been officially queued in the IT system.
+          </p>
 
-        <div className="ticket-box">
-          <span className="ticket-label">Official Tracking Number</span>
-          <div className="ticket-number-display">
-            <strong>{submittedTicket.ticket_number}</strong>
-            <button type="button" className="copy-btn" onClick={copyTicket}>
-              {copied ? 'Copied!' : 'Copy'}
+          <div className="ticket-box">
+            <span className="ticket-label">Official Tracking Number</span>
+            <div className="ticket-number-display">
+              <strong>{submittedTicket.ticket_number}</strong>
+              <button type="button" className="copy-btn" onClick={copyTicket}>
+                {copied ? 'Copied!' : 'Copy'}
+              </button>
+            </div>
+            <p className="ticket-hint">
+              Save this number to check your resolution status or reference it with IT.
+            </p>
+          </div>
+
+          <div className="submission-summary">
+            <div className="summary-row">
+              <span>Issue:</span>
+              <strong>{submittedTicket.title}</strong>
+            </div>
+            <div className="summary-row">
+              <span>Department:</span>
+              <span>{submittedTicket.department}</span>
+            </div>
+            <div className="summary-row">
+              <span>Priority:</span>
+              <span className={`urgency-tag urgency-${submittedTicket.urgency.toLowerCase()}`}>
+                {submittedTicket.urgency}
+              </span>
+            </div>
+            <div className="summary-row">
+              <span>Status:</span>
+              <span className="status-badge">{submittedTicket.status}</span>
+            </div>
+          </div>
+
+          <div className="btn-group-row">
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => {
+                if (onTrackTicket) {
+                  onTrackTicket(submittedTicket.ticket_number);
+                } else {
+                  navigate('/track');
+                }
+              }}
+            >
+              Track Status
+            </button>
+            <button type="button" className="nav-btn" onClick={resetForm}>
+              Report Another Issue
             </button>
           </div>
-          <p className="ticket-hint">
-            Save this number to check your resolution status or reference it with IT.
-          </p>
-        </div>
-
-        <div className="submission-summary">
-          <div className="summary-row">
-            <span>Issue:</span>
-            <strong>{submittedTicket.title}</strong>
-          </div>
-          <div className="summary-row">
-            <span>Department:</span>
-            <span>{submittedTicket.department}</span>
-          </div>
-          <div className="summary-row">
-            <span>Priority:</span>
-            <span className={`urgency-tag urgency-${submittedTicket.urgency.toLowerCase()}`}>
-              {submittedTicket.urgency}
-            </span>
-          </div>
-          <div className="summary-row">
-            <span>Status:</span>
-            <span className="status-badge">{submittedTicket.status}</span>
-          </div>
-        </div>
-
-        <div className="btn-group-row">
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={() => onTrackTicket(submittedTicket.ticket_number)}
-          >
-            Track Status
-          </button>
-          <button type="button" className="nav-btn" onClick={resetForm}>
-            Report Another Issue
-          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="form-page-container">
-      <div className="form-header-banner">
-        <h1 className="main-title">IT Incident & Support Request</h1>
-        <p className="main-subtitle">
-          Report technical issues, system outages, or equipment problems. All requests are
-          formally tracked and addressed by IT support.
-        </p>
-      </div>
+    <div className="report-page-container">
+      <div className="form-page-container">
+        <div className="form-header-banner">
+          <h1 className="main-title">IT Incident & Support Request</h1>
+          <p className="main-subtitle">
+            Report technical issues, system outages, or equipment problems. All requests are
+            formally tracked and addressed by IT support.
+          </p>
+        </div>
 
       <div className="incident-form-card">
         <Alert type="error" message={error} />
@@ -348,5 +359,6 @@ export default function ReportIncidentPage({ onTrackTicket }) {
         </form>
       </div>
     </div>
-  );
+  </div>
+);
 }

@@ -24,6 +24,10 @@ export default function ProfilePage() {
         <h2 className="card-title">Account Details</h2>
         <div className="profile-details">
           <div className="profile-row">
+            <span className="profile-label">Username:</span>
+            <span className="profile-value">{user?.username || '—'}</span>
+          </div>
+          <div className="profile-row">
             <span className="profile-label">Email:</span>
             <span className="profile-value">{user?.email}</span>
           </div>

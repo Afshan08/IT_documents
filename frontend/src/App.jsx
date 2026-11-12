@@ -27,19 +27,25 @@ function MainApp() {
     return element;
   };
 
+  const defaultHome = user?.is_admin ? "/dashboard/queue" : "/report";
+
   return (
     <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Navigate to="/report" replace />} />
-        <Route path="/report" element={<ReportIncidentPage />} />
-        <Route path="/track" element={<TrackIncidentPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/dashboard/*" element={requireAdmin(<Dashboard />)} />
-        <Route path="*" element={<Navigate to="/report" replace />} />
-      </Routes>
+      <div className="app-layout">
+        <Navbar />
+        <main className="app-main">
+          <Routes>
+            <Route path="/" element={<Navigate to={defaultHome} replace />} />
+            <Route path="/report" element={<ReportIncidentPage />} />
+            <Route path="/track" element={<TrackIncidentPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/dashboard/*" element={requireAdmin(<Dashboard />)} />
+            <Route path="*" element={<Navigate to={defaultHome} replace />} />
+          </Routes>
+        </main>
+      </div>
     </BrowserRouter>
   );
 }

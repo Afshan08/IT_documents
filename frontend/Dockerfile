@@ -1,20 +1,26 @@
-# Build stage
-FROM node:20-alpine AS build
+FROM node:20-alpine
+
+# Install Nginx web server
+RUN apk add --no-cache nginx
 
 WORKDIR /app
 
+# Install dependencies
 COPY package*.json ./
 RUN npm install
 
+# Copy application code
 COPY . .
-RUN npm run build
 
-# Production stage
-FROM nginx:alpine
-
-COPY --from=build /app/dist /usr/share/nginx/html
+# Configure Nginx
+RUN mkdir -p /run/nginx /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/http.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Setup runtime entrypoint script
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/docker-entrypoint.sh"]

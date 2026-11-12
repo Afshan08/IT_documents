@@ -39,59 +39,61 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="auth-card">
-      <h2 className="card-title">Create an Account</h2>
-      <p className="card-subtitle">Sign up to get started</p>
+    <div className="auth-page-container">
+      <div className="auth-card">
+        <h2 className="card-title">Create an Account</h2>
+        <p className="card-subtitle">Sign up to get started</p>
 
-      <Alert type="error" message={error} />
+        <Alert type="error" message={error} />
 
-      <form onSubmit={handleSubmit} className="auth-form">
-        <div className="form-group">
-          <label htmlFor="signup-email">Email Address</label>
-          <input
-            id="signup-email"
-            type="email"
-            required
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="signup-email">Email Address</label>
+            <input
+              id="signup-email"
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="signup-password">Password (min 6 characters)</label>
+            <input
+              id="signup-password"
+              type="password"
+              required
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="signup-confirm-password">Confirm Password</label>
+            <input
+              id="signup-confirm-password"
+              type="password"
+              required
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+
+          <button type="submit" className="btn-primary" disabled={submitting}>
+            {submitting ? 'Creating account...' : 'Create Account'}
+          </button>
+        </form>
+
+        <div className="card-footer">
+          <span>Already have an account? </span>
+          <Link to="/login" className="text-link-accent">
+            Sign In
+          </Link>
         </div>
-
-        <div className="form-group">
-          <label htmlFor="signup-password">Password (min 6 characters)</label>
-          <input
-            id="signup-password"
-            type="password"
-            required
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="signup-confirm-password">Confirm Password</label>
-          <input
-            id="signup-confirm-password"
-            type="password"
-            required
-            placeholder="••••••••"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </div>
-
-        <button type="submit" className="btn-primary" disabled={submitting}>
-          {submitting ? 'Creating account...' : 'Create Account'}
-        </button>
-      </form>
-
-      <div className="card-footer">
-        <span>Already have an account? </span>
-        <Link to="/login" className="text-link-accent">
-          Sign In
-        </Link>
       </div>
     </div>
   );
